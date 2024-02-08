@@ -3,36 +3,34 @@
 #include "esp_log.h"
 
 
+// FreeRTOS
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+
 // Storage
 #include "nvs_flash.h"
 #include "nvs.h"
 
 // Networking
-#include "wifi.h"
+
+// Peripherals
+#include "led.h"
 
 
 
 void firmware_init(void) {
     // Check chip status
 
-    // Check if ESP Log 
-    static const char *TAG = "firmware-init";
-    ESP_LOGD(TAG, "Firmware Initialization Process started.");
+    // Configure Peripherals
+    configure_led();
 
-
-    // Check if NVS Flash is mounted properly
-    esp_err_t ret = nvs_flash_init();
-    if (ret != ESP_OK) {
-        ESP_LOGE(TAG, "Issue with Flash: %s", esp_err_to_name(ret));
-        esp_system_abort("Flash was not able to be initialized");
-    } else {
-        ESP_LOGI(TAG, "Flash Initialized");
-    }
-
-
-    // Check if WiFi is Available
-    wifi_init_sta();
-
+    // LED TEST
+    turn_led_on();
+    vTaskDelay(2000 / portTICK_PERIOD_MS);
+    set_color(30, 30, 30);
+    vTaskDelay(2000 / portTICK_PERIOD_MS);
+    turn_led_off();
+    
 
     return;
 }
