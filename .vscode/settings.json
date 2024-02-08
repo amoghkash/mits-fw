@@ -1,0 +1,31 @@
+{
+    "C_Cpp.intelliSenseEngine": "default",
+    "idf.adapterTargetName": "esp32s3",
+    "idf.customExtraPaths": "/Users/amoghkashyap/Documents/libraries/.espressif/tools/xtensa-esp-elf-gdb/12.1_20221002/xtensa-esp-elf-gdb/bin:/Users/amoghkashyap/Documents/libraries/.espressif/tools/riscv32-esp-elf-gdb/12.1_20221002/riscv32-esp-elf-gdb/bin:/Users/amoghkashyap/Documents/libraries/.espressif/tools/xtensa-esp32-elf/esp-12.2.0_20230208/xtensa-esp32-elf/bin:/Users/amoghkashyap/Documents/libraries/.espressif/tools/xtensa-esp32s2-elf/esp-12.2.0_20230208/xtensa-esp32s2-elf/bin:/Users/amoghkashyap/Documents/libraries/.espressif/tools/xtensa-esp32s3-elf/esp-12.2.0_20230208/xtensa-esp32s3-elf/bin:/Users/amoghkashyap/Documents/libraries/.espressif/tools/riscv32-esp-elf/esp-12.2.0_20230208/riscv32-esp-elf/bin:/Users/amoghkashyap/Documents/libraries/.espressif/tools/esp32ulp-elf/2.35_20220830/esp32ulp-elf/bin:/Users/amoghkashyap/Documents/libraries/.espressif/tools/cmake/3.24.0/CMake.app/Contents/bin:/Users/amoghkashyap/Documents/libraries/.espressif/tools/openocd-esp32/v0.12.0-esp32-20230921/openocd-esp32/bin:/Users/amoghkashyap/Documents/libraries/.espressif/tools/ninja/1.10.2:/Users/amoghkashyap/Documents/libraries/.espressif/tools/esp-rom-elfs/20230320",
+    "idf.customExtraVars": {
+        "OPENOCD_SCRIPTS": "/Users/amoghkashyap/Documents/libraries/.espressif/tools/openocd-esp32/v0.12.0-esp32-20230921/openocd-esp32/share/openocd/scripts",
+        "ESP_ROM_ELF_DIR": "/Users/amoghkashyap/Documents/libraries/.espressif/tools/esp-rom-elfs/20230320/"
+    },
+    "idf.espIdfPath": "/Users/amoghkashyap/Documents/libraries/esp/esp-idf",
+    "idf.openOcdConfigs": [
+        "interface/ftdi/esp32_devkitj_v1.cfg",
+        "target/esp32s3.cfg"
+    ],
+    "idf.port": "/dev/cu.usbserial-1140",
+    "idf.pythonBinPath": "/Users/amoghkashyap/Documents/libraries/.espressif/python_env/idf5.1_py3.9_env/bin/python",
+    "idf.toolsPath": "/Users/amoghkashyap/Documents/libraries/.espressif",
+    "idf.flashType": "UART",
+    "files.associations": {
+        "esp_system.h": "c",
+        "nvs_flash.h": "c",
+        "stdio.h": "c",
+        "esp_log.h": "c",
+        "*.tcc": "c",
+        "event_groups.h": "c",
+        "task.h": "c",
+        "esp_err.h": "c",
+        "wifi.h": "c",
+        "sdkconfig.h": "c",
+        "led.h": "c"
+    }
+}
