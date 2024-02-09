@@ -10,6 +10,8 @@
                 "/Users/amoghkashyap/Documents/libraries/esp/esp-idf/components/esp_wifi/include",
                 "/Users/amoghkashyap/Documents/libraries/esp/esp-idf/components/esp_common/include"
             ],
+
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
             "browse": {
                 "path": [
                     "${config:idf.espIdfPath}/components",
