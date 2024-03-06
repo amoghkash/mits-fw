@@ -1,0 +1,16 @@
+
+
+#define MPU6050_ADDR            0x68
+#define MPU6050_WHO_AM_I        0x75
+
+#define MPU6050_SMPLRT_DIV      0x19
+#define MPU6050_SMPLRT_DIV_VAL  0x84
+#define MPU6050_CONFIG          0x1A
+
+#define MPU6050_GYRO_CONFIG     0x1B
+#define MPU6050_GYRO_CONFIG_VAL 0x00
+
+#define MPU6050_ACCL_CONFIG     0x1C
+#define MPU6050_ACCL_CONFIG_VAL 0x00
+
+

@@ -3,6 +3,7 @@
 #include "esp_log.h"
 #include "led_strip.h"
 #include "sdkconfig.h"
+#include "board.h"
 
 // FreeRTOS
 #include "freertos/FreeRTOS.h"
@@ -41,7 +42,59 @@ static uint8_t* update_color_data(uint8_t r, uint8_t g, uint8_t b) {
     return s_led_colors;
 }
 
+/**
+ * @brief       Update LED Color by 1 step in the target direction.
+ * 
+ * @param r     Target Red Value
+ * @param g     Target Green Value
+ * @param b     Target Blue Value
+ * 
+ * @returns     True if the LED color was updated, False if the LED color is already at the target
+ */
+static bool step_led_color(uint8_t r, uint8_t g, uint8_t b) {
+    int r_diff = 0;
+    int g_diff = 0;
+    int b_diff = 0;
 
+    if (s_led_colors[0] < r){
+        r_diff = 1;
+    } else if (s_led_colors[0] == r){
+        r_diff = 0;
+    } else {
+        r_diff = -1;
+    }
+
+    if (s_led_colors[1] < g){
+        g_diff = 1;
+    } else if (s_led_colors[1] == g){
+        g_diff = 0;
+    } else {
+        g_diff = -1;
+    }
+
+    if (s_led_colors[2] < b){
+        b_diff = 1;
+    } else if (s_led_colors[2] == b){
+        b_diff = 0;
+    } else {
+        b_diff = -1;
+    }
+
+    if (r_diff == 0 && g_diff == 0 && b_diff == 0) {
+        return false;
+    }
+
+    //  DEBUG LOG
+    //ESP_LOGD(TAG, "Diff: %d %d %d", r_diff, g_diff, b_diff);
+    //ESP_LOGD(TAG, "Updating LED Color to %d %d %d", s_led_colors[0] + r_diff, s_led_colors[1] + g_diff, s_led_colors[2] + b_diff);
+
+    led_strip_set_pixel(led_strip, 0, s_led_colors[0] + r_diff, s_led_colors[1] + g_diff, s_led_colors[2] + b_diff);
+    led_strip_refresh(led_strip);
+
+    update_color_data(s_led_colors[0] + r_diff, s_led_colors[1] + g_diff, s_led_colors[2] + b_diff);
+
+    return true;
+}
 
 
 // EXTERNAL FUNCTIONS
@@ -53,7 +106,7 @@ void configure_led(void) {
     ESP_LOGD(TAG, "Configuring LED Strip");
     /* LED strip initialization with the GPIO and pixels number*/
     led_strip_config_t strip_config = {
-        .strip_gpio_num = BLINK_GPIO,
+        .strip_gpio_num = LED_PIN,
         .max_leds = 1, // at least one LED on board
     };
     led_strip_rmt_config_t rmt_config = {
@@ -151,21 +204,7 @@ void set_color_gradiate(uint8_t r, uint8_t g, uint8_t b) {
     // Set LED Color
     ESP_LOGD(TAG, "Gradiating LED color to %d %d %d", r, g, b);
 
-    int r_diff = r - s_led_colors[0];
-    int g_diff = g - s_led_colors[1];
-    int b_diff = b - s_led_colors[2];
-
-    ESP_LOGD(TAG, "Differences: %d %d %d", r_diff, g_diff, b_diff);
-
-    int r_step = r_diff / COLOR_ITERATIONS;
-    int g_step = g_diff / COLOR_ITERATIONS;
-    int b_step = b_diff / COLOR_ITERATIONS;
-
-    ESP_LOGD(TAG, "Steps: %d %d %d", r_step, g_step, b_step);
-
-    for (int i = 0; i < COLOR_ITERATIONS; i++) {
-        led_strip_set_pixel(led_strip, 0, s_led_colors[0] + (r_step * i), s_led_colors[1] + (g_step * i), s_led_colors[2] + (b_step * i));
-        led_strip_refresh(led_strip);
+    while (step_led_color(r, g, b)) {
         vTaskDelay(ITERATION_TIME);
     }
    
@@ -185,15 +224,8 @@ void gradiate_led_on(void) {
     ESP_LOGD(TAG, "Gradiating LED on");
 
     set_color_gradiate(255, 255, 255);
-    esp_err_t ret = led_strip_refresh(led_strip);
 
-    if (ret != ESP_OK) {
-        ESP_LOGE(TAG, "led_strip_refresh failed, %d", ret);
-        return;
-    }
-
-    s_led_state = false;
-    update_color_data(255, 255, 255);
+    s_led_state = true;
 }
 
 
@@ -235,15 +267,14 @@ void led_test(void) {
 
     turn_led_on();
     vTaskDelay(500 / portTICK_PERIOD_MS);
+    set_color_gradiate(255,0,0);
+    vTaskDelay(500 / portTICK_PERIOD_MS);
     gradiate_led_off();
     vTaskDelay(500 / portTICK_PERIOD_MS);
-
-
     gradiate_led_on();
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
-    set_color_instant(255, 0, 0);
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
-    set_color_gradiate(0,0,255);
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
+    vTaskDelay(500 / portTICK_PERIOD_MS);
+    set_color_gradiate(47,243,123);
+    vTaskDelay(500 / portTICK_PERIOD_MS);
     turn_led_off();
+    vTaskDelay(500 / portTICK_PERIOD_MS);
 }

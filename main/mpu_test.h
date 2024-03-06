@@ -1,0 +1,1 @@
+void task_mpu6050(void);

@@ -17,11 +17,16 @@
 
 
 
-
+#include "mpu_test.h"
 
 
 void app_main(void)
 {
+    printf("Testing MPU6050...\n");
+    //task_mpu6050();
+
+    /*
     printf("Starting Application...\n");
     firmware_init();
+    */
 }

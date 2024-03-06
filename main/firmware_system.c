@@ -9,6 +9,7 @@
 
 // Peripherals
 #include "led.h"
+#include "i2c.h"
 
 // Storage
 #include "nvs_flash.h"
@@ -41,12 +42,14 @@ void firmware_init(void) {
     // Configure Peripherals
     configure_led();
 
+    configure_I2C();
+
 
     if (FIRMWARE_TEST_ENABLED) {
         firmware_test();
     }
 
-    firmware_safe();
+    //firmware_safe();
 
     return;
 }
@@ -60,8 +63,12 @@ void firmware_test(void) {
     ESP_LOGI(TAG, "Testing Peripherals");
 
     ESP_LOGD(TAG, "Testing LED");
-    led_test();
-    ESP_LOGD(TAG, "LED Test Complete");
+    //led_test();
+    ESP_LOGI(TAG, "LED Test Complete");
+
+    ESP_LOGD(TAG, "Testing I2C");
+    i2c_test();
+    ESP_LOGI(TAG, "I2C Test Complete");
 
     return;
 }

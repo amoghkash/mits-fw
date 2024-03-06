@@ -11,7 +11,7 @@
         "interface/ftdi/esp32_devkitj_v1.cfg",
         "target/esp32s3.cfg"
     ],
-    "idf.port": "/dev/cu.usbserial-1130",
+    "idf.port": "/dev/cu.usbserial-110",
     "idf.pythonBinPath": "/Users/amoghkashyap/Documents/libraries/.espressif/python_env/idf5.1_py3.9_env/bin/python",
     "idf.toolsPath": "/Users/amoghkashyap/Documents/libraries/.espressif",
     "idf.flashType": "UART",
@@ -29,6 +29,9 @@
         "led.h": "c",
         "gpio.h": "c",
         "led_strip.h": "c",
-        "led_strip_interface.h": "c"
+        "led_strip_interface.h": "c",
+        "mpu6050.h": "c",
+        "i2c.h": "c",
+        "board.h": "c"
     }
 }
