@@ -9,13 +9,13 @@
 
 // Peripherals
 #include "led.h"
-#include "i2c.h"
+#include "peripherals/i2c.h"
 
 // Storage
 #include "nvs_flash.h"
 #include "nvs.h"
 
-#include "firmware_system.h"
+#include "system/firmware_system.h"
 
 static const char *TAG = "initalizer";
 
@@ -49,6 +49,15 @@ void firmware_init(void) {
         firmware_test();
     }
 
+    ESP_ERROR_CHECK(nvs_flash_init());
+    ESP_ERROR_CHECK(esp_netif_init());
+    ESP_ERROR_CHECK(esp_event_loop_create_default());
+
+    
+    ESP_ERROR_CHECK(connect());
+
+    tcp_client();
+
     //firmware_safe();
 
     return;
@@ -63,12 +72,12 @@ void firmware_test(void) {
     ESP_LOGI(TAG, "Testing Peripherals");
 
     ESP_LOGD(TAG, "Testing LED");
-    //led_test();
+    led_test();
     ESP_LOGI(TAG, "LED Test Complete");
 
-    ESP_LOGD(TAG, "Testing I2C");
-    i2c_test();
-    ESP_LOGI(TAG, "I2C Test Complete");
+    //ESP_LOGD(TAG, "Testing I2C");
+   //i2c_test();
+    //ESP_LOGI(TAG, "I2C Test Complete");
 
     return;
 }

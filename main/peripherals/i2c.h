@@ -10,8 +10,6 @@
 
 
 
-
-
 // Initalizer Functions
 esp_err_t configure_I2C(void);
 

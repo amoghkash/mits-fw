@@ -33,5 +33,6 @@
         "mpu6050.h": "c",
         "i2c.h": "c",
         "board.h": "c"
-    }
+    },
+    "C_Cpp.errorSquiggles": "enabled"
 }

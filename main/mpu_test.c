@@ -7,7 +7,7 @@
 #include "sdkconfig.h"
 #include "mpu_test.h"
 #include "board.h"
-#include "i2c.h"
+#include "peripherals/i2c.h"
 
 #define PIN_SDA I2C_SDA
 #define PIN_CLK I2C_SCL
@@ -36,8 +36,8 @@
 
 static char tag[] = "mpu6050";
 
-#undef ESP_ERROR_CHECK
-#define ESP_ERROR_CHECK(x)   do { esp_err_t rc = (x); if (rc != ESP_OK) { ESP_LOGE("err", "esp_err_t = %d", rc); assert(0 && #x);} } while(0);
+//#undef ESP_ERROR_CHECK
+//#define ESP_ERROR_CHECK(x)   do { esp_err_t rc = (x); if (rc != ESP_OK) { ESP_LOGE("err", "esp_err_t = %d", rc); assert(0 && #x);} } while(0);
 
 void task_mpu6050(void) {
 	ESP_LOGD(tag, ">> mpu6050");
@@ -51,7 +51,7 @@ void task_mpu6050(void) {
 	ESP_ERROR_CHECK(i2c_master_write_byte(cmd, (I2C_ADDRESS << 1) | I2C_MASTER_WRITE, 1));
 	i2c_master_write_byte(cmd, MPU6050_ACCEL_XOUT_H, 1);
 	ESP_ERROR_CHECK(i2c_master_stop(cmd));
-	i2c_master_cmd_begin(I2C_NUM_0, cmd, 1000/portTICK_PERIOD_MS);
+	i2c_master_cmd_begin(I2C_MASTER_NUM, cmd, 1000/portTICK_PERIOD_MS);
 	i2c_cmd_link_delete(cmd);
 
 	cmd = i2c_cmd_link_create();
@@ -60,7 +60,7 @@ void task_mpu6050(void) {
 	i2c_master_write_byte(cmd, MPU6050_PWR_MGMT_1, 1);
 	i2c_master_write_byte(cmd, 0, 1);
 	ESP_ERROR_CHECK(i2c_master_stop(cmd));
-	i2c_master_cmd_begin(I2C_NUM_0, cmd, 1000/portTICK_PERIOD_MS);
+	i2c_master_cmd_begin(I2C_MASTER_NUM, cmd, 1000/portTICK_PERIOD_MS);
 	i2c_cmd_link_delete(cmd);
 
 
@@ -70,7 +70,7 @@ void task_mpu6050(void) {
 	short accel_y;
 	short accel_z;
 
-	while(1) {
+	for(int i = 0; i < 2; i++) {
 		// Tell the MPU6050 to position the internal register pointer to register
 		// MPU6050_ACCEL_XOUT_H.
 		cmd = i2c_cmd_link_create();
@@ -78,7 +78,7 @@ void task_mpu6050(void) {
 		ESP_ERROR_CHECK(i2c_master_write_byte(cmd, (I2C_ADDRESS << 1) | I2C_MASTER_WRITE, 1));
 		ESP_ERROR_CHECK(i2c_master_write_byte(cmd, MPU6050_ACCEL_XOUT_H, 1));
 		ESP_ERROR_CHECK(i2c_master_stop(cmd));
-		ESP_ERROR_CHECK(i2c_master_cmd_begin(I2C_NUM_0, cmd, 1000/portTICK_PERIOD_MS));
+		i2c_master_cmd_begin(I2C_MASTER_NUM, cmd, 1000/portTICK_PERIOD_MS);
 		i2c_cmd_link_delete(cmd);
 
 		cmd = i2c_cmd_link_create();
@@ -94,7 +94,7 @@ void task_mpu6050(void) {
 
 		//i2c_master_read(cmd, data, sizeof(data), 1);
 		ESP_ERROR_CHECK(i2c_master_stop(cmd));
-		ESP_ERROR_CHECK(i2c_master_cmd_begin(I2C_NUM_0, cmd, 1000/portTICK_PERIOD_MS));
+		i2c_master_cmd_begin(I2C_MASTER_NUM, cmd, 1000/portTICK_PERIOD_MS);
 		i2c_cmd_link_delete(cmd);
 
 		accel_x = (data[0] << 8) | data[1];
@@ -102,8 +102,7 @@ void task_mpu6050(void) {
 		accel_z = (data[4] << 8) | data[5];
 		ESP_LOGD(tag, "accel_x: %d, accel_y: %d, accel_z: %d", accel_x, accel_y, accel_z);
 
-		//vTaskDelay(500/portTICK_PERIOD_MS);
+		vTaskDelay(500/portTICK_PERIOD_MS);
 	}
 
-	vTaskDelete(NULL);
 }

@@ -14,7 +14,7 @@
 
 // I2C
 #include "driver/i2c.h"
-#include "i2c.h"
+#include "peripherals/i2c.h"
 
 #include "support/mpu6050.h"
 
@@ -84,11 +84,3 @@ void i2c_test(void) {
     return;
 }
 
-void mpu_startup_seq(void) {
-    uint8_t data;
-    i2c_write_byte(MPU6050_ADDR, MPU6050_SMPLRT_DIV, MPU6050_SMPLRT_DIV_VAL);
-    i2c_write_byte(MPU6050_ADDR, MPU6050_CONFIG, 0x00);
-    i2c_read_byte(MPU6050_ADDR, 0x19, &data);
-    ESP_LOGI(TAG, "0x44: %d", data);
-    return;
-}

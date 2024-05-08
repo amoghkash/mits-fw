@@ -13,9 +13,6 @@
 
 
 
-
-
-
 // LED Configuration
 
 void configure_led(void);

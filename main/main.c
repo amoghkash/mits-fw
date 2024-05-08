@@ -4,7 +4,7 @@
 #include "esp_log.h"
 
 // System
-#include "firmware_system.h"
+#include "system/firmware_system.h"
 
 
 // FreeRTOS
@@ -22,11 +22,12 @@
 
 void app_main(void)
 {
-    printf("Testing MPU6050...\n");
+    //printf("Testing MPU6050...\n");
     //task_mpu6050();
+    //initalize_mpu6050();
 
-    /*
+    
     printf("Starting Application...\n");
     firmware_init();
-    */
+    
 }
