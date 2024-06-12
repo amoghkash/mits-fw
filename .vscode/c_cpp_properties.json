@@ -5,10 +5,9 @@
             "compilerPath": "${config:idf.toolsPath}/tools/xtensa-esp32-elf/esp-12.2.0_20230208/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/Users/amoghkashyap/Documents/libraries/esp/esp-idf/**",
-                "/Users/amoghkashyap/Documents/libraries/esp/esp-idf/components/esp_wifi/include",
-                "/Users/amoghkashyap/Documents/libraries/esp/esp-idf/components/esp_common/include",
-                "${workspaceFolder}/build/config/"
+                "${workspaceFolder}/build/config/**",
+                "${workspaceFolder}/managed_components/**",
+                "/Users/amoghkashyap/Documents/libraries/esp/v5.2.1/esp-idf/components/**"
             ],
             "compileCommands": "${workspaceFolder}/build/compile_commands.json",
             "browse": {
@@ -20,7 +19,8 @@
                     "${workspaceFolder}"
                 ],
                 "limitSymbolsToIncludedHeaders": false
-            }
+            },
+            "cStandard": "c23"
         }
     ],
     "version": 4

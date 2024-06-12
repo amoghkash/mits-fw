@@ -10,6 +10,7 @@
 #include "freertos/task.h"
 
 #include "led.h"
+#include <stdbool.h>
 
 static const char *TAG = "led";
 

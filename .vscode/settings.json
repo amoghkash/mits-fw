@@ -6,7 +6,6 @@
         "OPENOCD_SCRIPTS": "/Users/amoghkashyap/Documents/libraries/.espressif/tools/openocd-esp32/v0.12.0-esp32-20230921/openocd-esp32/share/openocd/scripts",
         "ESP_ROM_ELF_DIR": "/Users/amoghkashyap/Documents/libraries/.espressif/tools/esp-rom-elfs/20230320/"
     },
-    "idf.espIdfPath": "/Users/amoghkashyap/Documents/libraries/esp/esp-idf",
     "idf.openOcdConfigs": [
         "interface/ftdi/esp32_devkitj_v1.cfg",
         "target/esp32s3.cfg"
@@ -32,7 +31,15 @@
         "led_strip_interface.h": "c",
         "mpu6050.h": "c",
         "i2c.h": "c",
-        "board.h": "c"
+        "board.h": "c",
+        "freertos.h": "c",
+        "i2c_master.h": "c",
+        "i2c_types.h": "c",
+        "gpio_types.h": "c",
+        "stdint.h": "c",
+        "led_strip_rmt.h": "c",
+        "i2c_private.h": "c",
+        "*.inc": "c"
     },
     "C_Cpp.errorSquiggles": "enabled"
 }

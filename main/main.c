@@ -1,33 +1,15 @@
 // Base
 #include <stdio.h>
-#include "esp_system.h"
-#include "esp_log.h"
 
-// System
-#include "system/firmware_system.h"
+#include "drivers/led.h"
+#include "drivers/i2c.h"
 
 
-// FreeRTOS
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-
-// Storage
-#include "nvs_flash.h"
-#include "nvs.h"
-
-
-
-#include "mpu_test.h"
-
+#include "hal/lsm9ds1.h"
 
 void app_main(void)
 {
-    //printf("Testing MPU6050...\n");
-    //task_mpu6050();
-    //initalize_mpu6050();
-
-    
-    printf("Starting Application...\n");
-    firmware_init();
-    
+    i2c_init();
+    ESP_ERROR_CHECK(lsm9ds1_connect());
+    lsm9ds1_write(0x40);
 }
