@@ -11,10 +11,16 @@
 
 void app_main(void)
 {
+
+    // Peripherals Initialization
+    configure_led();
     i2c_init();
+
+
     //initialize_usb();
     ESP_ERROR_CHECK(lsm9ds1_connect());
     lsm9ds1_write(0x40);
+    
     ESP_ERROR_CHECK(console_init());
     ESP_ERROR_CHECK(console_run());
 }

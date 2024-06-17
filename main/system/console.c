@@ -6,8 +6,10 @@
 #include "esp_log.h"
 
 #include "console.h"
-#include "commands/common.h"
 #include "nvs_system.h"
+#include "commands/common.h"
+#include "commands/peripherals.h"
+
 
 #define TAG "console"
 
@@ -43,6 +45,7 @@ esp_err_t console_init(void) {
 
     ESP_ERROR_CHECK(esp_console_register_help_command());
     ESP_ERROR_CHECK(register_common_commands());
+    ESP_ERROR_CHECK(register_peripheral_commands());
 
     #ifdef CONFIG_ESP_CONSOLE_UART_DEFAULT
         esp_console_dev_uart_config_t hw_config = ESP_CONSOLE_DEV_UART_CONFIG_DEFAULT();

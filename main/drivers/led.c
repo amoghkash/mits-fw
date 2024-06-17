@@ -107,7 +107,7 @@ void configure_led(void) {
     ESP_LOGD(TAG, "Configuring LED Strip");
     /* LED strip initialization with the GPIO and pixels number*/
     led_strip_config_t strip_config = {
-        .strip_gpio_num = LED_PIN,
+        .strip_gpio_num = RGB_LED_PIN,
         .max_leds = 1, // at least one LED on board
     };
     led_strip_rmt_config_t rmt_config = {
