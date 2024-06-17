@@ -21,3 +21,6 @@ To make changes to the build system configurations, use the menuconfig GUI. This
     1. Enable TinyUSB CDC feature
 2. Partition Setup
     1. Select the "Custom partition table CSV" option in the "Partition Table" Field
+3. Console Settings
+    1. To use USB for Console, select "USB CDC" in the "Channel for console output" option
+    2. Change the "Size of USB CDC RX buffer" to 512 bytes
