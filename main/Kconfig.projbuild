@@ -1,0 +1,13 @@
+menu "MITS Peripheral Configuration"
+    config LED_CONSOLE_COMMANDS
+        bool "Enable LED Console commands"
+        default y
+        help
+            Enable LED control from the console.
+
+    config I2C_CONSOLE_COMMANDS
+        bool "Enable I2C Console commands"
+        default y
+        help
+            Enable I2C access from the console.
+endmenu

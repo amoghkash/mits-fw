@@ -1,6 +1,10 @@
 #include <stdio.h>
+#include <stdbool.h>
+
 #include "driver/gpio.h"
 #include "esp_log.h"
+#include "esp_console.h"
+#include "argtable3/argtable3.h"
 #include "led_strip.h"
 #include "sdkconfig.h"
 #include "board.h"
@@ -10,14 +14,8 @@
 #include "freertos/task.h"
 
 #include "led.h"
-#include <stdbool.h>
 
-static const char *TAG = "led";
-
-/* Use project configuration menu (idf.py menuconfig) to choose the GPIO to blink,
-   or you can edit the following line and set a number here.
-*/
-#define BLINK_GPIO 48
+static const char *TAG = "RGBLed";
 
 static bool s_led_state = false; // True is on, false is off
 static bool s_led_configured = false;
@@ -25,8 +23,11 @@ static uint8_t s_led_colors[] = {0,0,0};
 
 static led_strip_handle_t led_strip;
 
+// FUNCTION PROTOTYPES
+#ifdef CONFIG_LED_CONSOLE_COMMANDS
+    static void register_led_commands();
+#endif
 // INTERNAL FUNCTIONS
-
 
 /**
  * @brief       Update the color data
@@ -97,7 +98,6 @@ static bool step_led_color(uint8_t r, uint8_t g, uint8_t b) {
     return true;
 }
 
-
 // EXTERNAL FUNCTIONS
 
 /**
@@ -116,10 +116,22 @@ void configure_led(void) {
     ESP_ERROR_CHECK(led_strip_new_rmt_device(&strip_config, &rmt_config, &led_strip));
     /* Set all LED off to clear all pixels */
     led_strip_clear(led_strip);
+    
+    #ifdef CONFIG_LED_CONSOLE_COMMANDS
+        register_led_commands();
+    #endif
 
     s_led_configured = true;
 }
 
+/**
+ * @brief Check if the LED is configured
+ * 
+ * @return true if the LED is configured, false otherwise
+ */
+bool led_configured(void) {
+    return s_led_configured;
+}
 
 /**
  * @brief Turn on the LED
@@ -145,7 +157,6 @@ void turn_led_on(void) {
     update_color_data(255, 255, 255);
 }
 
-
 /**
  * @brief Turn off the LED instantly
  */
@@ -165,8 +176,6 @@ void turn_led_off(void) {
 
     s_led_state = false;
 }
-
-
 
 /**
  * @brief       Set the LED color. 
@@ -195,7 +204,13 @@ void set_color_instant(uint8_t r, uint8_t g, uint8_t b) {
     update_color_data(r, g, b);
 }
 
-
+/**
+ * @brief       Gradiate the LED color to the target color
+ * 
+ * @param r     Target Red Value
+ * @param g     Target Green Value
+ * @param b     Target Blue Value
+ */
 void set_color_gradiate(uint8_t r, uint8_t g, uint8_t b) {
     // Check if LED is configured
     if (!s_led_configured) {
@@ -213,7 +228,6 @@ void set_color_gradiate(uint8_t r, uint8_t g, uint8_t b) {
     update_color_data(r, g, b);
 }
 
-
 /**
  * @brief Gradiate the LED on
  */
@@ -228,7 +242,6 @@ void gradiate_led_on(void) {
 
     s_led_state = true;
 }
-
 
 /**
  * @brief Gradiate the LED off
@@ -254,28 +267,75 @@ void gradiate_led_off(void) {
 }
 
 
+// LED Control Over Console
+#ifdef CONFIG_LED_CONSOLE_COMMANDS
+// LED On Wrapper
+static int led_on(int argc, char **argv) {
+    turn_led_on();
+    return 0;
+}
 
+// LED Off Wrapper
+static int led_off(int argc, char **argv) {
+    turn_led_off();
+    return 0;
+}
 
+static struct {
+    struct arg_int *red_color;
+    struct arg_int *green_color;
+    struct arg_int *blue_color;
+    struct arg_end *end;
+} led_color_args;
 
-/**
- * @brief Run a test on the LED
- */
-void led_test(void) {
-    if (!s_led_configured) {
-        ESP_LOGE(TAG, "LED not configured");
-        return;
+static int led_color(int argc, char **argv) {
+    int nerrors = arg_parse(argc, argv, (void **)&led_color_args);
+
+    if (nerrors != 0) {
+        arg_print_errors(stderr, led_color_args.end, argv[0]);
+        return 0;
     }
 
-    turn_led_on();
-    vTaskDelay(500 / portTICK_PERIOD_MS);
-    set_color_gradiate(255,0,0);
-    vTaskDelay(500 / portTICK_PERIOD_MS);
-    gradiate_led_off();
-    vTaskDelay(500 / portTICK_PERIOD_MS);
-    gradiate_led_on();
-    vTaskDelay(500 / portTICK_PERIOD_MS);
-    set_color_gradiate(47,243,123);
-    vTaskDelay(500 / portTICK_PERIOD_MS);
-    turn_led_off();
-    vTaskDelay(500 / portTICK_PERIOD_MS);
+    uint8_t r = (uint8_t)led_color_args.red_color->ival[0];
+    uint8_t g = (uint8_t)led_color_args.green_color->ival[0];
+    uint8_t b = (uint8_t)led_color_args.blue_color->ival[0];
+
+    set_color_gradiate(r, g, b);
+    printf("Setting LED color to %d %d %d\n", r, g, b);
+    return 0;
 }
+
+static void register_led_commands() {
+    const esp_console_cmd_t led_on_cmd = {
+        .command = "led-on",
+        .help = "Turn on LED",
+        .hint = NULL,
+        .func = &led_on,
+        .argtable = NULL
+    };
+
+    ESP_ERROR_CHECK(esp_console_cmd_register(&led_on_cmd));
+
+    const esp_console_cmd_t led_off_cmd = {
+        .command = "led-off",
+        .help = "Turn off LED",
+        .hint = NULL,
+        .func = &led_off,
+        .argtable = NULL
+    };
+    ESP_ERROR_CHECK(esp_console_cmd_register(&led_off_cmd));
+
+    led_color_args.red_color = arg_int0("r", "red", "<red>", "LED Red Value");
+    led_color_args.green_color = arg_int0("g", "green", "<green>", "LED Green Value");
+    led_color_args.blue_color = arg_int0("b", "blue", "<blue>", "LED Blue Value");
+    led_color_args.end = arg_end(1);
+    const esp_console_cmd_t led_color_cmd = {
+        .command = "led-color",
+        .help = "Change LED Color",
+        .hint = NULL,
+        .func = &led_color,
+        .argtable = &led_color_args
+    };
+    ESP_ERROR_CHECK(esp_console_cmd_register(&led_color_cmd));
+}
+#endif

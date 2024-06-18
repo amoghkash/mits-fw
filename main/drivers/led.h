@@ -16,8 +16,8 @@
 
 
 // LED Configuration
-
 void configure_led(void);
+bool led_configured(void);
 
 
 // LED Control Functions
@@ -30,8 +30,3 @@ void gradiate_led_off(void);
 
 void set_color_instant(uint8_t r, uint8_t g, uint8_t b);
 void set_color_gradiate(uint8_t r, uint8_t g, uint8_t b);
-
-
-// LED Test Functions
-
-void led_test(void);
