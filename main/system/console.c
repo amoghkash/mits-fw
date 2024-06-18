@@ -29,7 +29,7 @@ static esp_console_repl_t *repl = NULL;
 static esp_console_repl_config_t repl_config = ESP_CONSOLE_REPL_CONFIG_DEFAULT();
 
 
-esp_err_t console_init(void) {
+esp_err_t initialize_console(void) {
     esp_err_t ret;
 
     if (initialized) {
@@ -60,7 +60,7 @@ esp_err_t console_init(void) {
 
 esp_err_t console_run(void) {
     if (!initialized) {
-       ESP_ERROR_CHECK(console_init());
+       ESP_ERROR_CHECK(initialize_console());
     }
 
     return esp_console_start_repl(repl);

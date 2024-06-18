@@ -1,4 +1,7 @@
 #pragma once
+#ifdef __cplusplus
+    extern "C" {
+#endif
 
 #include <stdio.h>
 #include "sdkconfig.h"
@@ -30,3 +33,7 @@ void gradiate_led_off(void);
 
 void set_color_instant(uint8_t r, uint8_t g, uint8_t b);
 void set_color_gradiate(uint8_t r, uint8_t g, uint8_t b);
+
+#ifdef __cplusplus
+    }
+#endif

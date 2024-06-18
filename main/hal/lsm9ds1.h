@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef __cplusplus
+    extern "C" {
+#endif
+
 struct device_transaction {
     uint8_t     address;
     uint8_t     data;
@@ -29,3 +33,7 @@ esp_err_t lsm9ds1_activate(void);
 // Register Values
 #define LSM9DS1_ACCEL_CTRL_REG1_VAL     0xD8
 #define LSM9DS1_GYRO_CTRL_REG1_VAL      0xC8
+
+#ifdef __cplusplus
+    }
+#endif

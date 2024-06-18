@@ -5,11 +5,12 @@
 
 
 
-void initialize_nvs(void) {
-    esp_err_t err = nvs_flash_init();
-    if (err == ESP_ERR_NVS_NO_FREE_PAGES || err == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+esp_err_t initialize_nvs(void) {
+    esp_err_t ret = nvs_flash_init();
+    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
         ESP_ERROR_CHECK( nvs_flash_erase() );
-        err = nvs_flash_init();
+        ret = nvs_flash_init();
+        return ret;
     }
-    ESP_ERROR_CHECK(err);
+    return ret;
 }

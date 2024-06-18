@@ -45,3 +45,7 @@ esp_err_t enable_console(void) {
     return ESP_OK;
 }
 
+esp_err_t start_system(void)
+{
+    return ESP_OK;
+}
