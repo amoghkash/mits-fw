@@ -19,12 +19,14 @@ void app_main(void)
 {
     ESP_ERROR_CHECK(initialize_peripherals());
 
-    initialize_spiffs();
-    create_file("/spiffs/test.txt", "Hello, World!");
-    r_file("/spiffs/test.txt");
-    add_data_to_file("/spiffs/test.txt", "This is a test.");
-    deinitialize_spiffs();
+    initialize_fs();
+    create_file("/data/test.txt", "Hello, World!\n");
+    readout_file("/data/test.txt");
+    ESP_ERROR_CHECK(add_data_to_file("/data/test.txt", "This is a test.\n"));
+    deinitialize_fs();
     vTaskDelay(1000 / portTICK_PERIOD_MS);
-    initialize_spiffs();
-    r_file("/spiffs/test.txt");
+    initialize_fs();
+    char buffer[100];
+    ESP_ERROR_CHECK(read_file("/data/test.txt", buffer, 100));
+    printf("Buffer: %s\n", buffer);
 }
