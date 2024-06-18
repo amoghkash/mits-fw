@@ -71,3 +71,19 @@ esp_err_t lsm9ds1_read(int16_t *buf) {
 
     return ESP_OK;
 }
+
+
+void example(void) {
+
+    ESP_ERROR_CHECK(lsm9ds1_connect());
+    ESP_ERROR_CHECK(lsm9ds1_activate());
+    int16_t accel_data[3];
+    float accel_data_f[3];
+    while (true) {
+        lsm9ds1_read(accel_data);
+        accel_data_f[0] = (float)(accel_data[0]*0.244)/1000;
+        accel_data_f[1] = (float)(accel_data[1]*0.244)/1000;
+        accel_data_f[2] = (float)(accel_data[2]*0.244)/1000;
+        printf("Accel: %.2f, %.2f, %.2f\n", accel_data_f[0], accel_data_f[1], accel_data_f[2]);
+    }
+}
