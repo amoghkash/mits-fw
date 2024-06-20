@@ -55,7 +55,7 @@ esp_err_t FileSystem::checkRegistryFile(void) {
 esp_err_t FileSystem::createRegistryFile(void) {
     ESP_LOGI(TAG, "Creating Registry File...");
     // Create file
-    return create_file(registryFilePath, "");
+    return create_file(registryFilePath);
 }
 
 esp_err_t FileSystem::readRegistryFile(void) {
@@ -97,9 +97,8 @@ esp_err_t FileSystem::addToRegistryFile(const char *path) {
 }
 
 void FileSystem::printFiles(void) {
-    for (uint8_t i = 0; i < sizeof(files)/sizeof(files[0]); i++) {
-        printf("File %d: %s\n", i, files[i].c_str());
-    }
+    readout_file(registryFilePath);
+    return;
 }
 
 // File Functions
@@ -108,8 +107,11 @@ esp_err_t FileSystem::createFile(const char *path, const char *data) {
     ESP_LOGI(TAG, "Creating file %s", path);
     
     // Create the File
-    ret = create_file(path, data);
-    if (ret != ESP_OK) {
+    ret = create_file_add_data(path, data);
+    if (ret == ESP_ERR_NOT_ALLOWED) {
+        //ESP_LOGE(TAG, "File %s Exists.", path);
+        return ret;
+    } else if (ret != ESP_OK){
         ESP_LOGE(TAG, "Error creating %s.", path);
         return ret;
     }
@@ -124,3 +126,27 @@ esp_err_t FileSystem::createFile(const char *path, const char *data) {
     return ret;
 }
 
+// File Functions
+esp_err_t FileSystem::createFile(const char *path) {
+    esp_err_t ret;
+    ESP_LOGI(TAG, "Creating file %s", path);
+    
+    // Create the File
+    ret = create_file(path);
+    if (ret == ESP_ERR_NOT_ALLOWED) {
+        //ESP_LOGE(TAG, "File %s Exists.", path);
+        return ret;
+    } else if (ret != ESP_OK){
+        ESP_LOGE(TAG, "Error creating %s.", path);
+        return ret;
+    }
+
+    // Register File
+    ret = addToRegistryFile(path);
+    if (ret != ESP_OK) {
+        ESP_LOGE(TAG, "Error adding %s to Registry File.", path);
+        return ret;
+    }
+    
+    return ret;
+}

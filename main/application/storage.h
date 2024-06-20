@@ -22,6 +22,7 @@ class FileSystem {
         esp_err_t addToRegistryFile(const char *path);
 
         esp_err_t createFile(const char *path, const char *data);
+        esp_err_t createFile(const char *path);
         //esp_err_t readFile(const char *path, char *buffer, size_t buffer_size);
         void printFiles(void);
 };

@@ -7,17 +7,14 @@
 
 void test(void) {
     FileSystem fs;
-    //fs.format();
+    fs.format();
     fs.initialize();
     fs.readRegistryFile();
     fs.createFile("/data/test.txt", "Hello World!");
-    //fs.printFiles();
-    ESP_LOGI("main", "Reading Data File...");
-    readout_file("/data/test.txt");
-    ESP_LOGI("main", "Reading Registry File...");
-    readout_file("/data/registry.txt");
-
-    fs.createFile("/data/test1.txt", "Hello World!");
-    readout_file("/data/registry.txt");
-    fs.createFile("/data/test.txt", "Hello Worldee!");
+    fs.printFiles();
+    fs.createFile("/data/data_07202024.txt");
+    fs.createFile("/data/data_07212024.txt");
+    fs.printFiles();
+    fs.createFile("/data/data_07202024.txt");
+    fs.printFiles();
 }
