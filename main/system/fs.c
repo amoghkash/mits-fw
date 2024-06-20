@@ -58,7 +58,6 @@ esp_err_t initialize_fs(void) {
     return ESP_OK;
 }
 
-
 /**
  * @brief Deinitialize FileSystem
  * 
@@ -71,6 +70,20 @@ esp_err_t deinitialize_fs(void) {
 }
 
 /**
+ * @brief Format FileSystem
+ * 
+ * @return esp_err_t ESP_OK if successful, respective fail code otherwise
+ */
+esp_err_t format_fs(void) {
+    ESP_LOGD(TAG, "Formatting LittleFS");
+    esp_err_t ret = esp_littlefs_format(partition_label);
+    if (ret != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to format LittleFS (%s)", esp_err_to_name(ret));
+    }
+    return ret;
+}
+
+/**
  * @brief Create a file
  * 
  * @param filename      Path of the file to create
@@ -79,13 +92,28 @@ esp_err_t deinitialize_fs(void) {
  * @return esp_err_t    ESP_OK if successful, ESP_FAIL otherwise
  */
 esp_err_t create_file(const char* filename, const char* data) {
-    FILE* f = fopen(filename, "w");
+    FILE* f = fopen(filename, "r");
+    ESP_LOGI(TAG, "READING file %s", filename);
+    if (f != NULL) {
+        ESP_LOGE(TAG, "File already exists");
+        fclose(f);
+        return ESP_ERR_NOT_ALLOWED;
+    }
+
+    ESP_LOGI(TAG, "Creating file %s", filename);
+    f = fopen(filename, "w");
     if (f == NULL) {
         ESP_LOGE(TAG, "Failed to open file for writing");
         return ESP_FAIL;
     }
-    fprintf(f, data);
+    ESP_LOGI(TAG, "File CREATED %s", filename);
+
+    fputs(data, f);
+    ESP_LOGI(TAG, "FILE OUTPUT SET0 %s", filename);
+    fprintf(f, "\n");
+    ESP_LOGI(TAG, "FILE OUTPUT SET1 %s", filename);
     fclose(f);
+    ESP_LOGI(TAG, "FILE OUTPUT SET2 %s", filename);
     return ESP_OK;
 }
 
@@ -148,7 +176,8 @@ esp_err_t add_data_to_file(const char* filename, const char* data) {
         ESP_LOGE(TAG, "Failed to open file for appending");
         return ESP_FAIL;
     }
-    fprintf(f, data);
+    fputs(data, f);
+    fputs("\n", f);
     fclose(f);
     return ESP_OK;
 }

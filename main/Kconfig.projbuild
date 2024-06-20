@@ -11,3 +11,12 @@ menu "MITS Peripheral Configuration"
         help
             Enable I2C access from the console.
 endmenu
+
+
+menu "MITS Application Configuration"
+    config MITS_APP
+        bool "Enable MITS Application"
+        default y
+        help
+            Enable the MITS application.
+endmenu

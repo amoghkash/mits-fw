@@ -15,6 +15,7 @@
 #include "system/system.h"
 
 #include "application/storage.h"
+#include "application/test.h"
 
 #define TAG "main"
 
@@ -24,5 +25,6 @@ extern "C" void app_main(void)
 {
     ESP_ERROR_CHECK(initialize_peripherals());
     ESP_ERROR_CHECK(initialize_system());
-    test_cpp();
+
+    test();
 }

@@ -12,6 +12,8 @@
 
 #define TAG "system"
 
+static bool storage_initialized = false;
+static bool console_initialized = false;
 
 esp_err_t initialize_system(void) {
     ESP_LOGI(TAG, "Initializing system...");
@@ -20,7 +22,6 @@ esp_err_t initialize_system(void) {
     ESP_ERROR_CHECK(enable_console());
 
     ESP_LOGI(TAG, "System initialized.");
-
     return ESP_OK;
 }
 
@@ -31,6 +32,7 @@ esp_err_t initialize_storage(void) {
     ESP_ERROR_CHECK(initialize_nvs());
 
     ESP_LOGI(TAG, "Storage initialized.");
+    storage_initialized = true;
 
     return ESP_OK;
 }
@@ -41,8 +43,16 @@ esp_err_t enable_console(void) {
     ESP_ERROR_CHECK(initialize_console());
 
     ESP_LOGI(TAG, "Console enabled.");
-
+    console_initialized = true;
     return ESP_OK;
+}
+
+bool is_storage_initialized(void) {
+    return storage_initialized;
+}
+
+bool is_console_initialized(void) {
+    return console_initialized;
 }
 
 esp_err_t start_system(void)

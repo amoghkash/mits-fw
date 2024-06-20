@@ -6,6 +6,7 @@
 
 esp_err_t initialize_fs(void);
 esp_err_t deinitialize_fs(void);
+esp_err_t format_fs(void);
 
 esp_err_t create_file(const char *filename, const char *data);
 esp_err_t readout_file(const char *filename);
