@@ -28,7 +28,7 @@ class FileSystem {
         
         esp_err_t readFile(const char *filename, char *buffer, size_t buffer_size);
 
-        esp_err_t addToFile(const char* filename, char* data);
+        esp_err_t addToFile(const char* filename, const char* data);
 
         // Testing Files
         void printFiles(void);

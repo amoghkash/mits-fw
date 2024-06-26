@@ -159,7 +159,7 @@ esp_err_t FileSystem::readFile(const char* filename, char* buffer, size_t buffer
     return read_file(filename, buffer, buffer_size);
 }
 
-esp_err_t FileSystem::addToFile(const char* filename, char* data) {
+esp_err_t FileSystem::addToFile(const char* filename, const char* data) {
     ESP_LOGI(TAG, "Adding %s file %s", data, filename);
     return add_data_to_file(filename, data);
 }
@@ -217,6 +217,30 @@ static int console_readfile(int argc, char **argv) {
     return 0;
 }
 
+// Create a file from console
+static struct {
+    struct arg_file *fileinfo;
+    struct arg_str *data;
+    struct arg_end *end;
+} write_file_args;
+
+// Create a file
+static int console_writefile(int argc, char **argv) {
+    int nerrors = arg_parse(argc, argv, (void **)&write_file_args);
+
+    if (nerrors != 0) {
+        arg_print_errors(stderr, write_file_args.end, argv[0]);
+        return 0;
+    }
+
+    const char* filename = write_file_args.fileinfo->filename[0];
+    const char* data = write_file_args.data->sval[0];
+
+    FileSystem fs;
+    fs.addToFile(filename, data);
+    return 0;
+}
+
 // List all files
 static int console_listfiles(int argc, char **argv) {
     readout_file("/data/registry.txt");
@@ -226,6 +250,7 @@ static int console_listfiles(int argc, char **argv) {
 static int console_format(int argc, char **argv) {
     printf("Formatting FS...\n");
     format_fs();
+    FileSystem fs;
     return 0;
 }
 
@@ -236,7 +261,7 @@ void register_fs_commands() {
 
     ESP_LOGI(TAG, "Registering FS Commands...");
 
-    file_args.fileinfo = arg_file0("ff", NULL, "<filename>", "File to create");
+    file_args.fileinfo = arg_file0("f", NULL, "<filename>", "File to create");
     file_args.end = arg_end(1);
     const esp_console_cmd_t create_file_cmd = {
         .command = "create-file",
@@ -256,6 +281,18 @@ void register_fs_commands() {
     };
     ESP_ERROR_CHECK(esp_console_cmd_register(&read_file_cmd));
 
+    write_file_args.fileinfo = arg_file0("f", NULL, "<filename>", "File to create");
+    write_file_args.data = arg_str0("d", NULL, "<data>", "Data to write");
+    write_file_args.end = arg_end(1);
+    const esp_console_cmd_t write_file_cmd = {
+        .command = "write-file",
+        .help = "Write to a file",
+        .hint = NULL,
+        .func = &console_writefile,
+        .argtable = &write_file_args
+    };
+    ESP_ERROR_CHECK(esp_console_cmd_register(&write_file_cmd));
+
     const esp_console_cmd_t list_file_cmd = {
         .command = "ls",
         .help = "List all Files",
@@ -267,7 +304,7 @@ void register_fs_commands() {
 
     const esp_console_cmd_t format_cmd = {
         .command = "format",
-        .help = "Format FS",
+        .help = "Format File System",
         .hint = NULL,
         .func = &console_format,
         .argtable = NULL

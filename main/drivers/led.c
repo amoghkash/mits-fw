@@ -325,9 +325,9 @@ static void register_led_commands() {
     };
     ESP_ERROR_CHECK(esp_console_cmd_register(&led_off_cmd));
 
-    led_color_args.red_color = arg_int0("r", "red", "<red>", "LED Red Value");
-    led_color_args.green_color = arg_int0("g", "green", "<green>", "LED Green Value");
-    led_color_args.blue_color = arg_int0("b", "blue", "<blue>", "LED Blue Value");
+    led_color_args.red_color = arg_int0("r", "red", "<int>", "LED Red Value");
+    led_color_args.green_color = arg_int0("g", "green", "<int>", "LED Green Value");
+    led_color_args.blue_color = arg_int0("b", "blue", "<int>", "LED Blue Value");
     led_color_args.end = arg_end(1);
     const esp_console_cmd_t led_color_cmd = {
         .command = "led-color",
