@@ -10,6 +10,11 @@ menu "MITS Peripheral Configuration"
         default y
         help
             Enable I2C access from the console.
+    config FS_CONSOLE_COMMANDS
+        bool "Enable FS Console commands"
+        default y
+        help
+            Enable FileSystem access from the console.
 endmenu
 
 
@@ -17,6 +22,11 @@ menu "MITS Application Configuration"
     config MITS_APP
         bool "Enable MITS Application"
         default y
+        help
+            Enable the MITS application.
+    config MITS_PRODUCTION
+        bool "Enable MITS Production Application"
+        default n
         help
             Enable the MITS application.
 endmenu

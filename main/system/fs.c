@@ -2,10 +2,13 @@
 #include <string.h>
 #include <sys/unistd.h>
 #include <sys/stat.h>
+
 #include "esp_err.h"
 #include "esp_log.h"
 #include "esp_system.h"
 #include "esp_littlefs.h"
+#include "esp_console.h"
+#include "argtable3/argtable3.h"
 
 #include "fs.h"
 
@@ -14,7 +17,7 @@
 
 
 const char* base_path = "/data";
-const char* partition_label = "storage";
+const char* partition_label = "littlef";
 
 /**
  * @brief Initialize FileSystem
@@ -40,6 +43,7 @@ esp_err_t initialize_fs(void) {
             ESP_LOGE(TAG, "Failed to find LittleFS partition");
         } else {
             ESP_LOGE(TAG, "Failed to initialize LittleFS (%s)", esp_err_to_name(ret));
+            return ESP_OK;
         }
         return ret;
     }
@@ -122,11 +126,10 @@ esp_err_t create_file(const char* filename) {
  * @return esp_err_t    ESP_OK if successful, ESP_FAIL otherwise
  */
 esp_err_t create_file_add_data(const char* filename, const char* data) {
-    FILE* f = fopen(filename, "r");
+    FILE* f = fopen(filename, "r+");
     ESP_LOGI(TAG, "READING file %s", filename);
     if (f != NULL) {
         ESP_LOGE(TAG, "File already exists");
-        fclose(f);
         return ESP_ERR_NOT_ALLOWED;
     }
 
@@ -248,3 +251,6 @@ esp_err_t delete_file(const char* filename) {
     ESP_LOGD(TAG, "File deleted: %s", filename);
     return ESP_OK;
 }
+
+
+

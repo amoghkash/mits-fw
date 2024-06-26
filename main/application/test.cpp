@@ -9,12 +9,11 @@ void test(void) {
     FileSystem fs;
     fs.format();
     fs.initialize();
-    fs.readRegistryFile();
-    fs.createFile("/data/test.txt", "Hello World!");
-    fs.printFiles();
-    fs.createFile("/data/data_07202024.txt");
-    fs.createFile("/data/data_07212024.txt");
-    fs.printFiles();
-    fs.createFile("/data/data_07202024.txt");
-    fs.printFiles();
+    fs.createFile("/data/test.txt", "Hello Prajwal's World HELLO!");
+    char *buffer = new char[256];
+    fs.readFile("/data/test.txt", buffer, 150);
+    ESP_LOGI("test", "File Contents: %s", buffer);
+    fs.addToFile("/data/test.txt", "Added Data");
+    fs.readFile("/data/test.txt", buffer, 150);
+    ESP_LOGI("test", "File Contents: %s", buffer);
 }

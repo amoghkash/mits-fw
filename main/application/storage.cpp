@@ -4,21 +4,21 @@
 
 #include "esp_system.h"
 #include "esp_log.h"
+#include "esp_console.h"
 #include "freertos/FreeRTOS.h"
 
 #include "system/fs.h"
 #include "system/system.h"
+#include "argtable3/argtable3.h"
 
 #include "storage.h"
 
 #define TAG "FileSystem"
 
+
 FileSystem::FileSystem()
 {
-/*     std::string base = "created";
-    char* array = new char[base.length() + 1];
-    strcpy(array, base.c_str());
-    printf("FSManager %s\n", array); */
+    this->initialize();
 }
 
 // Basic File System Functions
@@ -29,8 +29,12 @@ esp_err_t FileSystem::initialize(void) {
     }
     ESP_LOGI(TAG, "FSManager initialized.");
 
+    #ifdef CONFIG_FS_CONSOLE_COMMANDS
+        register_fs_commands();
+    #endif
+
     // Read from Registry File
-    return ESP_OK;
+    return readRegistryFile();
 }
 
 esp_err_t FileSystem::format(void) {
@@ -40,7 +44,7 @@ esp_err_t FileSystem::format(void) {
 
 // Registry File Functions
 esp_err_t FileSystem::checkRegistryFile(void) {
-    ESP_LOGI(TAG, "Checking Registry File...");
+    ESP_LOGD(TAG, "Checking Registry File...");
     // Check if file exists
     FILE *file = fopen(registryFilePath, "r");
     if (file == NULL) {
@@ -48,7 +52,7 @@ esp_err_t FileSystem::checkRegistryFile(void) {
         return createRegistryFile();
     }
 
-    ESP_LOGI(TAG, "Registry File exists.");
+    ESP_LOGD(TAG, "Registry File exists.");
     return ESP_OK;
 }
 
@@ -84,7 +88,7 @@ esp_err_t FileSystem::readRegistryFile(void) {
         //line[strcspn(line, "\n")] = 0;
         // Add file to list
         files[numFiles] = line;
-        printf("File %d: %s\n", numFiles, line);
+        ESP_LOGD(TAG, "File %d: %s", numFiles, line);
         numFiles++;
     }
     return ESP_OK;
@@ -126,7 +130,6 @@ esp_err_t FileSystem::createFile(const char *path, const char *data) {
     return ret;
 }
 
-// File Functions
 esp_err_t FileSystem::createFile(const char *path) {
     esp_err_t ret;
     ESP_LOGI(TAG, "Creating file %s", path);
@@ -150,3 +153,126 @@ esp_err_t FileSystem::createFile(const char *path) {
     
     return ret;
 }
+
+esp_err_t FileSystem::readFile(const char* filename, char* buffer, size_t buffer_size) {
+    ESP_LOGI(TAG, "Reading file %s", filename);
+    return read_file(filename, buffer, buffer_size);
+}
+
+esp_err_t FileSystem::addToFile(const char* filename, char* data) {
+    ESP_LOGI(TAG, "Adding %s file %s", data, filename);
+    return add_data_to_file(filename, data);
+}
+
+void FileSystem::testFS() {
+    #ifndef CONFIG_MITS_PRODUCTION
+        format();
+        initialize();
+        readRegistryFile();
+        createFile("/data/test.txt", "Hello World!");
+        printFiles();
+        createFile("/data/data_07202024.txt");
+        createFile("/data/data_07212024.txt");
+        printFiles();
+        createFile("/data/data_07202024.txt");
+        printFiles();
+        format();
+    #endif
+}
+
+
+#ifdef CONFIG_FS_CONSOLE_COMMANDS
+// Create a file from console
+static struct {
+    struct arg_file *fileinfo;
+    struct arg_end *end;
+} file_args;
+
+// Create a file
+static int console_createfile(int argc, char **argv) {
+    int nerrors = arg_parse(argc, argv, (void **)&file_args);
+
+    if (nerrors != 0) {
+        arg_print_errors(stderr, file_args.end, argv[0]);
+        return 0;
+    }
+
+    const char* filename = file_args.fileinfo->filename[0];
+    FileSystem fs;
+    fs.createFile(filename);
+    return 0;
+}
+
+// Readout a file
+static int console_readfile(int argc, char **argv) {
+    int nerrors = arg_parse(argc, argv, (void **)&file_args);
+
+    if (nerrors != 0) {
+        arg_print_errors(stderr, file_args.end, argv[0]);
+        return 0;
+    }
+
+    const char* filename = file_args.fileinfo->filename[0];
+    readout_file(filename);
+    return 0;
+}
+
+// List all files
+static int console_listfiles(int argc, char **argv) {
+    readout_file("/data/registry.txt");
+    return 0;
+}
+
+static int console_format(int argc, char **argv) {
+    printf("Formatting FS...\n");
+    format_fs();
+    return 0;
+}
+
+void register_fs_commands() {
+    if (!is_storage_initialized()) {
+        return;
+    }
+
+    ESP_LOGI(TAG, "Registering FS Commands...");
+
+    file_args.fileinfo = arg_file0("ff", NULL, "<filename>", "File to create");
+    file_args.end = arg_end(1);
+    const esp_console_cmd_t create_file_cmd = {
+        .command = "create-file",
+        .help = "Create a file",
+        .hint = NULL,
+        .func = &console_createfile,
+        .argtable = &file_args
+    };
+    ESP_ERROR_CHECK(esp_console_cmd_register(&create_file_cmd));
+    
+    const esp_console_cmd_t read_file_cmd = {
+        .command = "read-file",
+        .help = "Read a file",
+        .hint = NULL,
+        .func = &console_readfile,
+        .argtable = &file_args
+    };
+    ESP_ERROR_CHECK(esp_console_cmd_register(&read_file_cmd));
+
+    const esp_console_cmd_t list_file_cmd = {
+        .command = "ls",
+        .help = "List all Files",
+        .hint = NULL,
+        .func = &console_listfiles,
+        .argtable = NULL
+    };
+    ESP_ERROR_CHECK(esp_console_cmd_register(&list_file_cmd));
+
+    const esp_console_cmd_t format_cmd = {
+        .command = "format",
+        .help = "Format FS",
+        .hint = NULL,
+        .func = &console_format,
+        .argtable = NULL
+    };
+    ESP_ERROR_CHECK(esp_console_cmd_register(&format_cmd));
+    
+}
+#endif

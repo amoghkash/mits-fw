@@ -7,11 +7,13 @@
 
 class FileSystem {
     private:
-        const char *registryFilePath = "/data/registry.txt";
         uint8_t numFiles;
         std::string files[MAX_FILE_COUNT];
+        bool initialized = false;
 
     public:
+        const char *registryFilePath = "/data/registry.txt";
+
         FileSystem();
         esp_err_t initialize(void);
         esp_err_t format(void);
@@ -23,6 +25,14 @@ class FileSystem {
 
         esp_err_t createFile(const char *path, const char *data);
         esp_err_t createFile(const char *path);
-        //esp_err_t readFile(const char *path, char *buffer, size_t buffer_size);
+        
+        esp_err_t readFile(const char *filename, char *buffer, size_t buffer_size);
+
+        esp_err_t addToFile(const char* filename, char* data);
+
+        // Testing Files
         void printFiles(void);
+        void testFS();
 };
+
+void register_fs_commands();
