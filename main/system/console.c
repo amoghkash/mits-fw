@@ -60,7 +60,7 @@ esp_err_t initialize_console(void) {
 
 esp_err_t console_run(void) {
     if (!initialized) {
-       ESP_ERROR_CHECK(initialize_console());
+       ESP_ERROR_CHECK_WITHOUT_ABORT(initialize_console());
     }
 
     return esp_console_start_repl(repl);

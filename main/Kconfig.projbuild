@@ -14,7 +14,12 @@ menu "MITS Peripheral Configuration"
         bool "Enable FS Console commands"
         default y
         help
-            Enable FileSystem access from the console.
+            Enable File System access from the console.
+    config MOTION_CONSOLE_COMMANDS
+        bool "Enable Motion Console commands"
+        default y
+        help
+            Enable MotionSense access from the console.
 endmenu
 
 

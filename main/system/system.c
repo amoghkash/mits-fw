@@ -16,12 +16,12 @@ static bool storage_initialized = false;
 static bool console_initialized = false;
 
 esp_err_t initialize_system(void) {
-    ESP_LOGI(TAG, "Initializing system...");
+    ESP_LOGD(TAG, "Initializing system...");
     ESP_ERROR_CHECK(initialize_storage());
     ESP_ERROR_CHECK(enable_console());
     ESP_LOGI(TAG, "System initialized.");
 
-    ESP_ERROR_CHECK(start_system());
+    //ESP_ERROR_CHECK(start_system());
 
     return ESP_OK;
 }
@@ -47,7 +47,7 @@ esp_err_t enable_console(void) {
         ESP_LOGD(TAG, "Console already initialized.");
         return ESP_OK;
     }
-    ESP_LOGI(TAG, "Enabling console...");
+    ESP_LOGD(TAG, "Enabling console...");
 
     ESP_ERROR_CHECK(initialize_console());
 

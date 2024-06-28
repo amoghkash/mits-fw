@@ -39,6 +39,10 @@ esp_err_t lsm9ds1_connect(void) {
     return ESP_OK;
 }
 
+bool lsm9ds1_is_connected(void) {
+    return lsm9ds1.connected;
+}
+
 esp_err_t lsm9ds1_write(uint8_t data) {
     esp_err_t ret;
 
@@ -59,7 +63,7 @@ esp_err_t lsm9ds1_activate(void) {
     return ESP_OK;
 }
 
-esp_err_t lsm9ds1_read(int16_t *buf) {
+esp_err_t lsm9ds1_read(int16_t buf[3]) {
     uint8_t tx[1] = { LSM9DS1_ACCEL_X_L };
     uint8_t rx[6];
 
