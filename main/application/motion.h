@@ -18,4 +18,6 @@ class Motion {
 };
 
 void logMotion(void * pvParameters);
-void register_motion_commands(void);
+#ifdef CONFIG_MOTION_CONSOLE_COMMANDS
+    void register_motion_commands(void);
+#endif

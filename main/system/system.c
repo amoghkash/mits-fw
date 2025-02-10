@@ -19,39 +19,29 @@ esp_err_t initialize_system(void) {
     ESP_LOGD(TAG, "Initializing system...");
     ESP_ERROR_CHECK(initialize_storage());
     ESP_ERROR_CHECK(enable_console());
-    ESP_LOGI(TAG, "System initialized.");
-
-    //ESP_ERROR_CHECK(start_system());
-
     return ESP_OK;
 }
 
 esp_err_t initialize_storage(void) {
-    if (is_storage_initialized()) {
+    if (storage_initialized) {
         ESP_LOGD(TAG, "Storage already initialized.");
         return ESP_OK;
     }
-    ESP_LOGD(TAG, "Initializing storage...");
-
     ESP_ERROR_CHECK(initialize_fs());
     ESP_ERROR_CHECK(initialize_nvs());
 
-    ESP_LOGI(TAG, "Storage initialized.");
     storage_initialized = true;
 
     return ESP_OK;
 }
 
 esp_err_t enable_console(void) {
-    if (is_console_initialized()) {
+    if (console_initialized) {
         ESP_LOGD(TAG, "Console already initialized.");
         return ESP_OK;
     }
-    ESP_LOGD(TAG, "Enabling console...");
-
-    ESP_ERROR_CHECK(initialize_console());
-
-    ESP_LOGI(TAG, "Console enabled.");
+    ESP_LOGD(TAG, "Console enabled.");
+    console_run();
     console_initialized = true;
     return ESP_OK;
 }
@@ -64,10 +54,3 @@ bool is_console_initialized(void) {
     return console_initialized;
 }
 
-esp_err_t start_system(void)
-{
-    ESP_LOGD(TAG, "Starting system...");
-
-    ESP_LOGI(TAG, "System started.");
-    return ESP_OK;
-}

@@ -6,8 +6,6 @@
 #include <stdio.h>
 #include "sdkconfig.h"
 
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
 
 
 // Definintions
@@ -19,7 +17,7 @@
 
 
 // LED Configuration
-void configure_led(void);
+void initialize_led(void);
 bool led_configured(void);
 
 
@@ -33,6 +31,10 @@ void gradiate_led_off(void);
 
 void set_color_instant(uint8_t r, uint8_t g, uint8_t b);
 void set_color_gradiate(uint8_t r, uint8_t g, uint8_t b);
+
+#ifdef CONFIG_LED_CONSOLE_COMMANDS
+void register_led_commands();
+#endif
 
 #ifdef __cplusplus
     }

@@ -8,7 +8,7 @@
 #include "freertos/task.h"
 #include "freertos/event_groups.h"
 
-#include "storage.h"
+#include "storage.hpp"
 #include "hal/lsm9ds1.h"
 #include "motion.h"
 

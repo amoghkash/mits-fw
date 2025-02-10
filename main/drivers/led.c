@@ -23,10 +23,7 @@ static uint8_t s_led_colors[] = {0,0,0};
 
 static led_strip_handle_t led_strip;
 
-// FUNCTION PROTOTYPES
-#ifdef CONFIG_LED_CONSOLE_COMMANDS
-    static void register_led_commands();
-#endif
+
 // INTERNAL FUNCTIONS
 
 /**
@@ -103,7 +100,7 @@ static bool step_led_color(uint8_t r, uint8_t g, uint8_t b) {
 /**
  * @brief Configure the LED on the Board
  */
-void configure_led(void) {
+void initialize_led(void) {
     ESP_LOGD(TAG, "Configuring LED Strip");
     /* LED strip initialization with the GPIO and pixels number*/
     led_strip_config_t strip_config = {
@@ -116,10 +113,6 @@ void configure_led(void) {
     ESP_ERROR_CHECK(led_strip_new_rmt_device(&strip_config, &rmt_config, &led_strip));
     /* Set all LED off to clear all pixels */
     led_strip_clear(led_strip);
-    
-    #ifdef CONFIG_LED_CONSOLE_COMMANDS
-        register_led_commands();
-    #endif
 
     s_led_configured = true;
 }
@@ -269,73 +262,73 @@ void gradiate_led_off(void) {
 
 // LED Control Over Console
 #ifdef CONFIG_LED_CONSOLE_COMMANDS
-// LED On Wrapper
-static int led_on(int argc, char **argv) {
-    turn_led_on();
-    return 0;
-}
-
-// LED Off Wrapper
-static int led_off(int argc, char **argv) {
-    turn_led_off();
-    return 0;
-}
-
-static struct {
-    struct arg_int *red_color;
-    struct arg_int *green_color;
-    struct arg_int *blue_color;
-    struct arg_end *end;
-} led_color_args;
-
-static int led_color(int argc, char **argv) {
-    int nerrors = arg_parse(argc, argv, (void **)&led_color_args);
-
-    if (nerrors != 0) {
-        arg_print_errors(stderr, led_color_args.end, argv[0]);
+    // LED On Wrapper
+    static int led_on(int argc, char **argv) {
+        turn_led_on();
         return 0;
     }
 
-    uint8_t r = (uint8_t)led_color_args.red_color->ival[0];
-    uint8_t g = (uint8_t)led_color_args.green_color->ival[0];
-    uint8_t b = (uint8_t)led_color_args.blue_color->ival[0];
+    // LED Off Wrapper
+    static int led_off(int argc, char **argv) {
+        turn_led_off();
+        return 0;
+    }
 
-    set_color_gradiate(r, g, b);
-    printf("Setting LED color to %d %d %d\n", r, g, b);
-    return 0;
-}
+    static struct {
+        struct arg_int *red_color;
+        struct arg_int *green_color;
+        struct arg_int *blue_color;
+        struct arg_end *end;
+    } led_color_args;
 
-static void register_led_commands() {
-    const esp_console_cmd_t led_on_cmd = {
-        .command = "led-on",
-        .help = "Turn on LED",
-        .hint = NULL,
-        .func = &led_on,
-        .argtable = NULL
-    };
+    static int led_color(int argc, char **argv) {
+        int nerrors = arg_parse(argc, argv, (void **)&led_color_args);
 
-    ESP_ERROR_CHECK(esp_console_cmd_register(&led_on_cmd));
+        if (nerrors != 0) {
+            arg_print_errors(stderr, led_color_args.end, argv[0]);
+            return 0;
+        }
 
-    const esp_console_cmd_t led_off_cmd = {
-        .command = "led-off",
-        .help = "Turn off LED",
-        .hint = NULL,
-        .func = &led_off,
-        .argtable = NULL
-    };
-    ESP_ERROR_CHECK(esp_console_cmd_register(&led_off_cmd));
+        uint8_t r = (uint8_t)led_color_args.red_color->ival[0];
+        uint8_t g = (uint8_t)led_color_args.green_color->ival[0];
+        uint8_t b = (uint8_t)led_color_args.blue_color->ival[0];
 
-    led_color_args.red_color = arg_int0("r", "red", "<int>", "LED Red Value");
-    led_color_args.green_color = arg_int0("g", "green", "<int>", "LED Green Value");
-    led_color_args.blue_color = arg_int0("b", "blue", "<int>", "LED Blue Value");
-    led_color_args.end = arg_end(1);
-    const esp_console_cmd_t led_color_cmd = {
-        .command = "led-color",
-        .help = "Change LED Color",
-        .hint = NULL,
-        .func = &led_color,
-        .argtable = &led_color_args
-    };
-    ESP_ERROR_CHECK(esp_console_cmd_register(&led_color_cmd));
-}
+        set_color_gradiate(r, g, b);
+        printf("Setting LED color to %d %d %d\n", r, g, b);
+        return 0;
+    }
+
+    void register_led_commands() {
+        const esp_console_cmd_t led_on_cmd = {
+            .command = "led-on",
+            .help = "Turn on LED",
+            .hint = NULL,
+            .func = &led_on,
+            .argtable = NULL
+        };
+
+        ESP_ERROR_CHECK(esp_console_cmd_register(&led_on_cmd));
+
+        const esp_console_cmd_t led_off_cmd = {
+            .command = "led-off",
+            .help = "Turn off LED",
+            .hint = NULL,
+            .func = &led_off,
+            .argtable = NULL
+        };
+        ESP_ERROR_CHECK(esp_console_cmd_register(&led_off_cmd));
+
+        led_color_args.red_color = arg_int0("r", "red", "<int>", "LED Red Value");
+        led_color_args.green_color = arg_int0("g", "green", "<int>", "LED Green Value");
+        led_color_args.blue_color = arg_int0("b", "blue", "<int>", "LED Blue Value");
+        led_color_args.end = arg_end(1);
+        const esp_console_cmd_t led_color_cmd = {
+            .command = "led-color",
+            .help = "Change LED Color",
+            .hint = NULL,
+            .func = &led_color,
+            .argtable = &led_color_args
+        };
+        ESP_ERROR_CHECK(esp_console_cmd_register(&led_color_cmd));
+    }
 #endif

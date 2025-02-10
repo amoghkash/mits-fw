@@ -17,7 +17,7 @@
 
 
 const char* base_path = "/data";
-const char* partition_label = "littlef";
+const char* partition_label = "storage";
 
 /**
  * @brief Initialize FileSystem
@@ -56,7 +56,7 @@ esp_err_t initialize_fs(void) {
         ret = esp_littlefs_format(conf.partition_label);
         return ret;
     } else {
-        ESP_LOGI(TAG, "Partition size: total: %d, used: %d", total, used);
+        ESP_LOGD(TAG, "Partition size: total: %d, used: %d", total, used);
     }
 
     return ESP_OK;
@@ -96,20 +96,20 @@ esp_err_t format_fs(void) {
  */
 esp_err_t create_file(const char* filename) {
     FILE* f = fopen(filename, "r");
-    ESP_LOGI(TAG, "READING file %s", filename);
+    ESP_LOGD(TAG, "READING file %s", filename);
     if (f != NULL) {
         ESP_LOGE(TAG, "File already exists");
         fclose(f);
         return ESP_ERR_NOT_ALLOWED;
     }
 
-    ESP_LOGI(TAG, "Creating file %s", filename);
+    ESP_LOGD(TAG, "Creating file %s", filename);
     f = fopen(filename, "w");
     if (f == NULL) {
         ESP_LOGE(TAG, "Failed to open file for writing");
         return ESP_FAIL;
     }
-    ESP_LOGI(TAG, "File CREATED %s", filename);
+    ESP_LOGD(TAG, "File CREATED %s", filename);
 
     const char *data = "";
     fputs(data, f);
@@ -127,19 +127,19 @@ esp_err_t create_file(const char* filename) {
  */
 esp_err_t create_file_add_data(const char* filename, const char* data) {
     FILE* f = fopen(filename, "r+");
-    ESP_LOGI(TAG, "READING file %s", filename);
+    ESP_LOGD(TAG, "READING file %s", filename);
     if (f != NULL) {
         ESP_LOGE(TAG, "File already exists");
         return ESP_ERR_NOT_ALLOWED;
     }
 
-    ESP_LOGI(TAG, "Creating file %s", filename);
+    ESP_LOGD(TAG, "Creating file %s", filename);
     f = fopen(filename, "w");
     if (f == NULL) {
         ESP_LOGE(TAG, "Failed to open file for writing");
         return ESP_FAIL;
     }
-    ESP_LOGI(TAG, "File CREATED %s", filename);
+    ESP_LOGD(TAG, "File CREATED %s", filename);
 
     fputs(data, f);
     fputs("\n", f);

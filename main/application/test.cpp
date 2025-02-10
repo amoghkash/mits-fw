@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "storage.h"
+#include "storage.hpp"
 #include "system/fs.h"
 #include "test.h"
 #include "esp_log.h"

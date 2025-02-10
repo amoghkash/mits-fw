@@ -4,7 +4,7 @@
     extern "C" {
 #endif
 
-void led_test(void);
+void register_app_commands();
 
 #ifdef __cplusplus
     }

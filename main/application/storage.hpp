@@ -1,9 +1,10 @@
 #pragma once
 
-#include <string>
+
 #include "config.h"
 #include "esp_err.h"
-
+#include <string>
+#include "cstring"
 
 class FileSystem {
     private:
@@ -34,4 +35,6 @@ class FileSystem {
         void testFS();
 };
 
-void register_fs_commands();
+#ifdef CONFIG_FS_CONSOLE_COMMANDS
+    void register_fs_commands();
+#endif

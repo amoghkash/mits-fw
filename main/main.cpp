@@ -25,7 +25,7 @@ extern "C" void app_main(void)
     ESP_ERROR_CHECK(initialize_peripherals());
     ESP_ERROR_CHECK(initialize_system());
     ESP_ERROR_CHECK(initialize_storage());
-    ESP_ERROR_CHECK(enable_console());
+    
 
     application_main();
 }
