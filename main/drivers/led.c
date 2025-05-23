@@ -7,7 +7,7 @@
 #include "argtable3/argtable3.h"
 #include "led_strip.h"
 #include "sdkconfig.h"
-#include "board.h"
+#include "mits_board.h"
 
 // FreeRTOS
 #include "freertos/FreeRTOS.h"

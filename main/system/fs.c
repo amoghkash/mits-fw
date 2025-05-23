@@ -24,7 +24,7 @@ const char* partition_label = "storage";
  * 
  * @return esp_err_t ESP_OK if successful, respective fail code otherwise
  */
-esp_err_t initialize_fs(void) {
+esp_err_t fs_initialize(void) {
     esp_vfs_littlefs_conf_t conf = {
     .base_path = base_path,
     .partition_label = partition_label,
@@ -32,7 +32,7 @@ esp_err_t initialize_fs(void) {
     .dont_mount = false,
     };
 
-    ESP_LOGD(TAG, "Initializing LittleFS");
+    ESP_LOGD(TAG, "Initializing FS");
 
     // Register FS
     esp_err_t ret = esp_vfs_littlefs_register(&conf);
@@ -52,11 +52,11 @@ esp_err_t initialize_fs(void) {
     size_t total = 0, used = 0;
     ret = esp_littlefs_info(conf.partition_label, &total, &used);
     if (ret != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to get LittleFS partition information (%s)", esp_err_to_name(ret));
+        ESP_LOGE(TAG, "Failed to get FS partition information (%s)", esp_err_to_name(ret));
         ret = esp_littlefs_format(conf.partition_label);
         return ret;
     } else {
-        ESP_LOGD(TAG, "Partition size: total: %d, used: %d", total, used);
+        ESP_LOGI(TAG, "Storage Info: total: %d, used: %d", total, used);
     }
 
     return ESP_OK;
@@ -67,8 +67,8 @@ esp_err_t initialize_fs(void) {
  * 
  * @return esp_err_t ESP_OK if successful
  */
-esp_err_t deinitialize_fs(void) {
-    ESP_LOGD(TAG, "LittleFS unmounting...");
+esp_err_t fs_deinitialize(void) {
+    ESP_LOGD(TAG, "FS unmounting...");
     esp_err_t ret = esp_vfs_littlefs_unregister(partition_label);
     return ret;
 }
@@ -78,8 +78,8 @@ esp_err_t deinitialize_fs(void) {
  * 
  * @return esp_err_t ESP_OK if successful, respective fail code otherwise
  */
-esp_err_t format_fs(void) {
-    ESP_LOGD(TAG, "Formatting LittleFS");
+esp_err_t fs_format(void) {
+    ESP_LOGD(TAG, "Formatting FS");
     esp_err_t ret = esp_littlefs_format(partition_label);
     if (ret != ESP_OK) {
         ESP_LOGE(TAG, "Failed to format LittleFS (%s)", esp_err_to_name(ret));

@@ -110,3 +110,4 @@ XUNIT_RESULT*.xml
 .vale/styles/*
 
 sdkconfig.old
+nvs.bin

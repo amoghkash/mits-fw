@@ -4,8 +4,11 @@
     extern "C" {
 #endif
 
-esp_err_t initialize_nvs(void);
+void nvs_initialize(void);
+void nvs_deinitialize(void);
 
+char *nvs_get_string(const char *key);
+void nvs_iterate_strings(void);
 #ifdef __cplusplus
     }
 #endif

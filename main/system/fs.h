@@ -4,9 +4,11 @@
     extern "C" {
 #endif
 
-esp_err_t initialize_fs(void);
-esp_err_t deinitialize_fs(void);
-esp_err_t format_fs(void);
+#include "esp_err.h"
+
+esp_err_t fs_initialize(void);
+esp_err_t fs_deinitialize(void);
+esp_err_t fs_format(void);
 
 esp_err_t create_file(const char* filename);
 esp_err_t create_file_add_data(const char *filename, const char *data);

@@ -1,31 +1,38 @@
 // Base
 
 #include <stdio.h>
+
+
+// Architecture Imports
 #include "esp_log.h"
 
-#include "drivers/led.h"
-#include "drivers/i2c.h"
-#include "drivers/usb.h"
-
-#include "hal/lsm9ds1.h"
-
+// Storage Imports
+#include "system/nvs_system.h"
+#include "system/fs.h"
 #include "system/console.h"
 
-#include "drivers/peripherals.h"
-#include "system/system.h"
-
-#include "application/app.h"
+// Peripheral Imoprts
+#include "drivers/i2c.h"
 
 #define TAG "main"
 
-
-
 extern "C" void app_main(void)
 {
-    ESP_ERROR_CHECK(initialize_peripherals());
-    ESP_ERROR_CHECK(initialize_system());
-    ESP_ERROR_CHECK(initialize_storage());
-    
+    // Initialize NVS
+    nvs_initialize();
+    nvs_iterate_strings();
+    char *device_id = nvs_get_string("sn");
+    if (device_id != NULL) {
+        ESP_LOGI(TAG, "Device ID: %s", device_id);
+        free(device_id);
+    }
 
-    application_main();
+    // Initialize Peripherals
+    i2c_initialize();
+
+    // Initialize Filesystem
+    fs_initialize();
+
+    // Initialize Console
+    console_initialize();
 }

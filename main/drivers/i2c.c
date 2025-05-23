@@ -1,7 +1,6 @@
 #include <stdio.h>
 
 #include "esp_log.h"
-#include "esp_log.h"
 #include "esp_console.h"
 #include "argtable3/argtable3.h"
 
@@ -9,7 +8,7 @@
 #include "driver/i2c_types.h"
 
 #include "i2c.h"
-#include "board.h"
+#include "mits_board.h"
 
 #define TAG "I2C"
 
@@ -27,14 +26,13 @@ i2c_master_bus_config_t i2c_config = {
     .intr_priority = 2
 };
 
-esp_err_t initialize_i2c(void) {
+esp_err_t i2c_initialize(void) {
     esp_err_t ret = i2c_new_master_bus(&i2c_config, &i2c_bus_handle);
     if (ret != ESP_OK)
     {
         ESP_LOGE(TAG, "Failed to initialize I2C master: %s", esp_err_to_name(ret));
     }
-    ESP_LOGI(TAG, "I2C master initialized successfully");
-
+    ESP_LOGD(TAG, "I2C master initialized successfully");
     return ret;
 }
 
@@ -52,7 +50,7 @@ i2c_master_dev_handle_t i2c_add_device(i2c_device_config_t* device_config) {
     if (ret != ESP_OK) {
         ESP_LOGE(TAG, "Failed to add I2C device: %s", esp_err_to_name(ret));
     }
-    ESP_LOGI(TAG, "I2C device added successfully");
+    ESP_LOGD(TAG, "I2C device added successfully");
     return dev_handle;
 }
 
@@ -140,8 +138,10 @@ esp_err_t i2c_probe(uint8_t device_address) {
         ESP_ERROR_CHECK(i2c_master_bus_rm_device(dev_handle));
         return 0;
     }
+#endif
 
-    void register_i2c_commands() {
+void register_i2c_commands() {
+    #ifdef CONFIG_I2C_CONSOLE_COMMANDS
         i2c_write_args.device_address = arg_int0("d", "device_address", "<d>", "I2C Device Address");
         i2c_write_args.register_address = arg_int1("r", "register_address", "<r>", "Register Address");
         i2c_write_args.data = arg_intn("w", "data", "<w>", 0, 3, "Data to write");
@@ -177,5 +177,5 @@ esp_err_t i2c_probe(uint8_t device_address) {
             .argtable = &i2c_read_args,
         };
         ESP_ERROR_CHECK(esp_console_cmd_register(&i2c_read_cmd));
-    }
-#endif
+    #endif
+}

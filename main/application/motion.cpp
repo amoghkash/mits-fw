@@ -96,7 +96,8 @@ void register_motion_commands(void) {
         .help = "Start Data Logging",
         .hint = NULL,
         .func = &console_motion_start,
-        .argtable = NULL
+        .argtable = NULL,
+        .func_w_context = NULL
     };
     ESP_ERROR_CHECK(esp_console_cmd_register(&start_motion_cmd));
 
@@ -105,7 +106,8 @@ void register_motion_commands(void) {
         .help = "Stop Data Logging",
         .hint = NULL,
         .func = &console_motion_stop,
-        .argtable = NULL
+        .argtable = NULL,
+        .func_w_context = NULL
     };
     ESP_ERROR_CHECK(esp_console_cmd_register(&stop_motion_cmd));
 }

@@ -31,7 +31,6 @@ static void register_restart() {
 static int shutdown(int argc, char **argv) {
     ESP_LOGI(TAG, "Shutting Down...");
     // TODO End all tasks and save all information
-    setConsoleState(false);
     return 0;
 }
 

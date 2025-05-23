@@ -341,7 +341,8 @@ void register_fs_commands() {
         .help = "Create a file",
         .hint = NULL,
         .func = &console_createfile,
-        .argtable = &file_args
+        .argtable = &file_args,
+        .func_w_context = NULL
     };
     ESP_ERROR_CHECK(esp_console_cmd_register(&create_file_cmd));
     
@@ -350,7 +351,8 @@ void register_fs_commands() {
         .help = "Read a file",
         .hint = NULL,
         .func = &console_readfile,
-        .argtable = &file_args
+        .argtable = &file_args,
+        .func_w_context = NULL
     };
     ESP_ERROR_CHECK(esp_console_cmd_register(&read_file_cmd));
 
@@ -359,7 +361,8 @@ void register_fs_commands() {
         .help = "Delete a file",
         .hint = NULL,
         .func = &console_deletefile,
-        .argtable = &file_args
+        .argtable = &file_args,
+        .func_w_context = NULL
     };
     ESP_ERROR_CHECK(esp_console_cmd_register(&delete_file_cmd));
 
@@ -371,7 +374,8 @@ void register_fs_commands() {
         .help = "Write to a file",
         .hint = NULL,
         .func = &console_writefile,
-        .argtable = &write_file_args
+        .argtable = &write_file_args,
+        .func_w_context = NULL
     };
     ESP_ERROR_CHECK(esp_console_cmd_register(&write_file_cmd));
 
@@ -380,7 +384,8 @@ void register_fs_commands() {
         .help = "List all Files",
         .hint = NULL,
         .func = &console_listfiles,
-        .argtable = NULL
+        .argtable = NULL,
+        .func_w_context = NULL
     };
     ESP_ERROR_CHECK(esp_console_cmd_register(&list_file_cmd));
 
@@ -389,7 +394,8 @@ void register_fs_commands() {
         .help = "Format File System",
         .hint = NULL,
         .func = &console_format,
-        .argtable = NULL
+        .argtable = NULL,
+        .func_w_context = NULL
     };
     ESP_ERROR_CHECK(esp_console_cmd_register(&format_cmd));
     
