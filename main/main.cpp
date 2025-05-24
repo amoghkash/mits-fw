@@ -14,6 +14,9 @@
 // Peripheral Imoprts
 #include "drivers/i2c.h"
 
+// Bluetooth Imports
+#include "bluetooth/ble.h"
+
 #define TAG "main"
 
 extern "C" void app_main(void)
@@ -34,5 +37,8 @@ extern "C" void app_main(void)
     fs_initialize();
 
     // Initialize Console
-    console_initialize();
+    //console_initialize();
+
+    // Initialize Bluetooth
+    ble_initialize();
 }
