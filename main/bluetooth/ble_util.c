@@ -1,6 +1,6 @@
 #include "esp_gap_ble_api.h"
 #include "esp_log.h"
-
+#include <string.h>
 #include "ble_util.h"
 
 #define TAG "BLE_UTIL"

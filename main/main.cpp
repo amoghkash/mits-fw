@@ -16,14 +16,12 @@
 
 // Bluetooth Imports
 #include "bluetooth/ble.h"
-
 #define TAG "main"
 
 extern "C" void app_main(void)
 {
     // Initialize NVS
     nvs_initialize();
-    nvs_iterate_strings();
     char *device_id = nvs_get_string("sn");
     if (device_id != NULL) {
         ESP_LOGI(TAG, "Device ID: %s", device_id);
